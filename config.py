@@ -10,6 +10,8 @@ class AppSettings(BaseSettings):
 class DatabaseSettings(BaseSettings):
     db_login: str
     db_password: str
+    db_host: str
+    db_port: str
 
 class SettingsFactory:
     def get_settings(self, type:str):

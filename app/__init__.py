@@ -6,7 +6,9 @@ from .models import Base
 from config import SettingsFactory
 
 db_settings = SettingsFactory().get_settings('db')
-db_engine = create_engine(f"postgresql+psycopg2://{db_settings.db_login}:{db_settings.db_password}@127.0.0.1:5432/mydb", echo=True)
+db_engine = create_engine(f"postgresql+psycopg2://"
+                          f"{db_settings.db_login}:{db_settings.db_password}"
+                          f"@{db_settings.db_host}:{db_settings.db_port}/mydb", echo=True)
 
 if not(database_exists(db_engine.url)):
     create_database(db_engine.url)

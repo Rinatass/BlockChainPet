@@ -1,9 +1,10 @@
 from app import app
 from config import SettingsFactory
 
-settings_factory = SettingsFactory()
 
 if __name__ == '__main__':
-    debug = settings_factory.get_settings('app').debug
-    print(debug)
+    app_settings = SettingsFactory().get_settings('app'
+    )
+    debug = app_settings.debug
+    app.config['SECRET_KEY'] = app_settings.secret_key
     app.run(debug = debug)

@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, or_
 from sqlalchemy.orm import sessionmaker
 from hashlib import sha256
 from .models import User
@@ -11,27 +11,38 @@ db_engine = create_engine(f"postgresql+psycopg2://"
 
 session_factory = sessionmaker(db_engine)
 
-class Database:
-    def create_user(self, username, password, email):
-        password = sha256(password.encode('utf-8')).hexdigest()
-        user = User(username=username, email=email, password=password)
-        with session_factory() as s:
-            s.add(user)
-            s.commit()
 
-    def user_exists(username, email):
-        with session_factory() as s:
-            query = select(User).where(User.email == email)
-            res = s.execute(query)
-            if res.one_or_none():
-                return True
-        return False
+def create_user(username, password, email):
+    password = sha256(password.encode('utf-8')).hexdigest()
+    user = User(username=username, email=email, password=password)
+    with session_factory() as s:
+        s.add(user)
+        s.commit()
 
 
+def user_exists(email):
+    with session_factory() as s:
+        query = select(User).where(User.email == email)
+        res = s.execute(query)
+        if res.one_or_none():
+            return True
+    return False
 
 
-'''if not(database_exists(db_engine.url)):
-    create_database(db_engine.url)
+def get_user_by_id(id):
+    with session_factory() as s:
+        query = select(User).where(User.id == id)
+        res = s.execute(query)
+        user = res.scalar_one_or_none()
 
-Base.metadata.drop_all(bind=db_engine)
-Base.metadata.create_all(bind=db_engine)'''
+    if user:
+        return user
+    return False
+
+
+def get_user_by_login(login):
+    with session_factory() as s:
+        query = select(User).filter((User.username == login) | (User.email == login))
+        res = s.execute(query)
+        user = res.scalar_one_or_none()
+    return user

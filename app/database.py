@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
-
-from .models import Base, User
+from hashlib import sha256
+from .models import User
 from config import SettingsFactory
 
 db_settings = SettingsFactory().get_settings('db')
@@ -13,6 +13,7 @@ session_factory = sessionmaker(db_engine)
 
 class Database:
     def create_user(self, username, password, email):
+        password = sha256(password.encode('utf-8')).hexdigest()
         user = User(username=username, email=email, password=password)
         with session_factory() as s:
             s.add(user)

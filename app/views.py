@@ -1,25 +1,18 @@
-from app import app
-from flask import render_template, request, flash, url_for, redirect
-from flask_login import login_user, LoginManager, login_required
+
+from flask import render_template, request, flash, url_for, redirect, Blueprint
+from flask_login import login_user, login_required, logout_user
 from .database import *
-from .UserLogin import UserLogin
+
+my_app = Blueprint('blockchain_app', __name__, template_folder='templates')
 
 
-login_manager = LoginManager(app)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return UserLogin().get_user(user_id)
-
-
-@app.route('/')
+@my_app.route('/')
 @login_required
 def index():
     return render_template('index.html')
 
 
-@app.route('/register', methods=['get', 'post'])
+@my_app.route('/register', methods=['get', 'post'])
 def register():
     if request.method == 'GET':
         return render_template('register.html')
@@ -50,7 +43,7 @@ def register():
     return render_template('login.html')
 
 
-@app.route('/login', methods=['get', 'post'])
+@my_app.route('/login', methods=['get', 'post'])
 def login():
     if request.method == 'POST':
         username = request.values.get('username').lower()
@@ -59,9 +52,15 @@ def login():
         user = get_user_by_login(username)
         password_hash = sha256(password.encode('utf-8')).hexdigest()
         if user and user.password == password_hash:
-            user_login = UserLogin().create(user)
-            login_user(user_login)
-            return render_template('index.html')
+            user
+            login_user(user)
+            return redirect(url_for('blockchain_app.index'))
         flash('Invalid login or password')
 
     return render_template('login.html')
+
+@my_app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect('login')

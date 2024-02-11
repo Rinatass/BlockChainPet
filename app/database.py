@@ -1,13 +1,13 @@
-from sqlalchemy import create_engine, select, or_
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 from hashlib import sha256
 from .models import User
-from config import SettingsFactory
+from app.config import SettingsFactory
 
 db_settings = SettingsFactory().get_settings('db')
 db_engine = create_engine(f"postgresql+psycopg2://"
                           f"{db_settings.db_login}:{db_settings.db_password}"
-                          f"@{db_settings.db_host}:{db_settings.db_port}/mydb", echo=True)
+                          f"@{db_settings.db_host}:{db_settings.db_port}/mydb", echo=False)
 
 session_factory = sessionmaker(db_engine)
 

@@ -7,6 +7,7 @@ from exceptions import SettingsTypeError
 class AppSettings(BaseSettings):
     debug: bool = Field(default=False)
     secret_key : str = Field(default=None)
+    host : str = Field(default='localhost')
 
 class DatabaseSettings(BaseSettings):
     db_login: str

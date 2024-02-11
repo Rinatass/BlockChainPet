@@ -1,9 +1,9 @@
 
 from flask import render_template, request, flash, url_for, redirect, Blueprint
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from .database import *
 
-my_app = Blueprint('blockchain_app', __name__, template_folder='templates')
+my_app = Blueprint('main', __name__, template_folder='templates')
 
 
 @my_app.route('/')
@@ -48,13 +48,14 @@ def login():
     if request.method == 'POST':
         username = request.values.get('username').lower()
         password = request.values.get('password')
+        remember_me = request.values.get('checkbox')
 
         user = get_user_by_login(username)
         password_hash = sha256(password.encode('utf-8')).hexdigest()
+
         if user and user.password == password_hash:
-            user
-            login_user(user)
-            return redirect(url_for('blockchain_app.index'))
+            login_user(user, remember=remember_me)
+            return redirect(request.args.get('next') or url_for('main.index'))
         flash('Invalid login or password')
 
     return render_template('login.html')

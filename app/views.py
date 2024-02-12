@@ -1,15 +1,20 @@
-
 from flask import render_template, request, flash, url_for, redirect, Blueprint
 from flask_login import login_user, login_required, logout_user, current_user
 from .database import *
+from . import celery_tasks
 
 my_app = Blueprint('main', __name__, template_folder='templates')
 
 
+@my_app.context_processor
+def inject_user():
+    return dict(user=current_user)
+
+
 @my_app.route('/')
-@login_required
 def index():
-    return render_template('index.html')
+    celery_tasks.wait.delay()
+    return render_template('index.html', current_user=current_user)
 
 
 @my_app.route('/register', methods=['get', 'post'])
@@ -21,7 +26,6 @@ def register():
     email = request.values.get('email').lower()
     password = request.values.get('password')
     password_repeat = request.values.get('password_repeat')
-
     if password != password_repeat:
         error = True
         flash('Passwords must be same')
@@ -60,8 +64,11 @@ def login():
 
     return render_template('login.html')
 
+
 @my_app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect('login')
+
+

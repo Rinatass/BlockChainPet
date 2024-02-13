@@ -10,6 +10,7 @@ celery = Celery(__name__, broker=config.celery_broker)
 
 @celery.task
 def process_block(transaction, previous_block):
+    # celery mining task
     previous_block = Block(**previous_block)
     transaction = Transaction(**transaction)
     hashable = transaction.get_hashable() + previous_block.get_hashable()

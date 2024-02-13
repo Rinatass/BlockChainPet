@@ -6,12 +6,14 @@ from app.database import get_user_by_id
 
 app = Flask(__name__)
 
+# get settings from config
 app_settings = SettingsFactory().get_settings('app')
 debug = app_settings.debug
 
 app.config['SECRET_KEY'] = app_settings.secret_key
 app.config['DEBUG'] = debug
 
+# create flask-login manager
 login_manager = LoginManager(app)
 login_manager.login_view = 'main.login'
 

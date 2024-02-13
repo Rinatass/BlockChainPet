@@ -2,7 +2,7 @@ from flask import render_template, request, flash, url_for, redirect, Blueprint
 from flask_login import login_user, login_required, logout_user, current_user
 from app.database import *
 from app.mongo import *
-from app.models import Block, Transaction, BlockChain
+from app.models import Transaction
 from app.celery_tasks import process_block
 from app.blockchain import count_balance
 my_app = Blueprint('main', __name__, template_folder='templates')

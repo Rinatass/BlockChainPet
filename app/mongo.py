@@ -10,6 +10,8 @@ client = MongoClient(settings.mongo_url, settings.mongo_port,
 db = client.blockchain
 collection = db.blocks
 
+'''Some blockchain mongo funcs'''
+
 
 def add_block(block):
     res = collection.insert_one(dict(block))

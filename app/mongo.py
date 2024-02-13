@@ -36,6 +36,16 @@ def get_all_blocks():
     return BlockChain(blockchain)
 
 
+def get_relative_blocks(username):
+    blocks = collection.find({"$or": [{"transaction.creditor": username},
+                                      {"transaction.debtor": username}]})
+    blockchain = []
+    for block in blocks:
+        blockchain.append(Block(**block))
+    return blockchain
+
+
+
 """db = client.blockchain
 collection = db.blocks"""
 

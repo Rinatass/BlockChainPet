@@ -58,6 +58,10 @@
     background-color: #3500D3;
 }
 
+th, td, table{
+  border:
+}
+
 .block_name{
     text-align: center;
 }
@@ -91,7 +95,10 @@ body{
     text-align: center;
 }
 
+
+
 .form-control{
+    text-align: center;
     border-color: #0C0032;
     background-color: #240090;
 }

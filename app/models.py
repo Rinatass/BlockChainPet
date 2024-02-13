@@ -1,7 +1,7 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String, Text
 from flask_login import UserMixin
-from pydantic import BaseModel, Field, PositiveInt
+from pydantic import BaseModel, Field, PositiveInt, PositiveFloat
 from typing import List
 
 
@@ -24,7 +24,7 @@ class User(Base, UserMixin):
 class Transaction(BaseModel):
     creditor: str
     debtor: str
-    amount: PositiveInt
+    amount: PositiveFloat
 
     def get_hashable(self):
         return str(self.__dict__)
@@ -56,4 +56,4 @@ class Block(BaseModel):
 
 
 class BlockChain(BaseModel):
-    blocks: List
+    blocks: List[Block]

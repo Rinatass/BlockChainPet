@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from pydantic import BaseModel, Field, PositiveInt
 from typing import List
 
+
 class Base(DeclarativeBase):
     pass
 
@@ -25,8 +26,11 @@ class Transaction(BaseModel):
     debtor: str
     amount: PositiveInt
 
+    def get_hashable(self):
+        return str(self.__dict__)
+
     def __repr__(self):
-        return f"   Creditor={self.creditor}\n  Debtor={self.debtor}\n  Amount={self.amount}"
+        return str(self.__dict__)
 
     def __str__(self):
         return f"  Creditor={self.creditor}\n  Debtor={self.debtor}\n  Amount={self.amount}"
@@ -34,17 +38,20 @@ class Transaction(BaseModel):
 
 class Block(BaseModel):
     id: int
-    transaction: Transaction
+    transaction: dict
     previous_block_hash: str
     proof: int
     hash: str
+
+    def get_hashable(self):
+        return str(self.__dict__)
 
     def __repr__(self):
         return f"Id={self.id}\nTransaction\n" \
                f"{self.transaction}Previous block hash={self.previous_block_hash}\nProof={self.proof}"
 
     def __str__(self):
-        return f"Id={self.id}\nTransaction\n" \
+        return f"Id={self.id}\nHash= {self.hash}\nTransaction\n" \
                f"{self.transaction}\nPrevious block hash={self.previous_block_hash}\nProof={self.proof}"
 
 

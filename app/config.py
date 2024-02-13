@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field
-from exceptions import SettingsTypeError
+from app.exceptions import SettingsTypeError
 
 '''Pydantics_settings reads settings from environment variables'''
 

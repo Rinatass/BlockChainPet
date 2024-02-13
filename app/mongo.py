@@ -12,17 +12,16 @@ collection = db.blocks
 
 
 def add_block(block):
-    print(dict(block))
-    pass
+    res = collection.insert_one(dict(block))
 
 
 def get_last_block():
-    block = Block(**collection.find_one())
+    block = Block(**collection.find_one(sort=[("id", -1)]))
     return block
 
 
 def get_last_blocks(num):
-    blocks = collection.find().limit(num)
+    blocks = collection.find().sort('id', -1).limit(num)
     blockchain = []
     for block in blocks:
         blockchain.append(Block(**block))

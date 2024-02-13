@@ -1,22 +1,24 @@
-from celery import Celery, shared_task
-from time import sleep
+from celery import Celery
 from app.config import SettingsFactory
 from app.mongo import add_block
+from app.blockchain import calculate_hash
+from app.models import Block, Transaction
 config = SettingsFactory().get_settings('celery')
 
 celery = Celery(__name__, broker=config.celery_broker)
 
 
 @celery.task
-def wait():
-    sleep(10)
-    print('task done!')
-    return 1
+def process_block(transaction, previous_block):
+    previous_block = Block(**previous_block)
+    transaction = Transaction(**transaction)
+    hashable = transaction.get_hashable() + previous_block.get_hashable()
+    hash_, proof = calculate_hash(hashable, 15)
 
-
-@celery.task
-def proceed_block(block):
+    block = Block(id=previous_block.id + 1,
+                  transaction=dict(transaction),
+                  previous_block_hash=previous_block.hash,
+                  proof=proof,
+                  hash=hash_)
     add_block(block)
-    pass
 
-# celery_tasks.wait.delay()

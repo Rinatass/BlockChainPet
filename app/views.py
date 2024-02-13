@@ -3,7 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from app.database import *
 from app.mongo import *
 from app.models import Block, Transaction, BlockChain
-from . import celery_tasks
+from app.celery_tasks import process_block
 
 my_app = Blueprint('main', __name__, template_folder='templates')
 
@@ -24,28 +24,15 @@ def index():
                                   debtor=request.values.get('to'),
                                   amount=request.values.get('amount'))
 
+        if not user_exists(username=transaction.debtor):
+            print()
+            flash('User not exists')
+            return redirect(url_for('main.index'))
         # get data about prev block
-        prev_block = Block(**get_last_block())
-        print(prev_block)
-        """    id: int = prev_block+1
-        transaction: dict[str, str] = {}
-        previous_block_hash: str prev_block_hash
-        proof: int = calculate_proof
-        hash: str calculate_proof"""
+        previous_block = get_last_block()
 
-        """
-        data = {
-        'id': 1,
-        'transaction': {},
-        'previous_block_hash': None,
-        'proof': None,
-        'hash': None,
-        }
-        """
+        process_block.delay(dict(transaction), dict(previous_block))
 
-        # create block
-        # start calculation of proof
-        # send task to salary where block will be added
         # render or redirect somewhere (Transaction will be added soon)
 
     # method GET
@@ -71,7 +58,7 @@ def register():
         error = True
         flash('Password must be more than 8 symbols')
 
-    if user_exists(email):
+    if user_exists(email=email):
         error = True
         flash('User with this email already exists')
 

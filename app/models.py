@@ -1,7 +1,8 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String, Text
 from flask_login import UserMixin
-
+from pydantic import BaseModel, Field, PositiveInt
+from typing import List
 
 class Base(DeclarativeBase):
     pass
@@ -17,3 +18,35 @@ class User(Base, UserMixin):
 
     def __repr__(self):
         return f"User(id={self.id}, username={self.username}, email={self.email})"
+
+
+class Transaction(BaseModel):
+    creditor: str
+    debtor: str
+    amount: PositiveInt
+
+    def __repr__(self):
+        return f"   Creditor={self.creditor}\n  Debtor={self.debtor}\n  Amount={self.amount}"
+
+    def __str__(self):
+        return f"  Creditor={self.creditor}\n  Debtor={self.debtor}\n  Amount={self.amount}"
+
+
+class Block(BaseModel):
+    id: int
+    transaction: Transaction
+    previous_block_hash: str
+    proof: int
+    hash: str
+
+    def __repr__(self):
+        return f"Id={self.id}\nTransaction\n" \
+               f"{self.transaction}Previous block hash={self.previous_block_hash}\nProof={self.proof}"
+
+    def __str__(self):
+        return f"Id={self.id}\nTransaction\n" \
+               f"{self.transaction}\nPrevious block hash={self.previous_block_hash}\nProof={self.proof}"
+
+
+class BlockChain(BaseModel):
+    blocks: List

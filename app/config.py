@@ -9,15 +9,25 @@ class AppSettings(BaseSettings):
     secret_key : str = Field(default=None)
     host : str = Field(default='localhost')
 
+
 class DatabaseSettings(BaseSettings):
-    db_login: str
-    db_password: str
-    db_host: str
-    db_port: str
+    db_login: str = Field(default=None)
+    db_password: str = Field(default=None)
+    db_host: str = Field(default=None)
+    db_port: str = Field(default=None)
+
 
 class CelerySettings(BaseSettings):
     celery_name: str = Field(default='celery_worker')
-    celery_broker: str
+    celery_broker: str = Field(default='redis://localhost')
+
+
+class MongoSettings(BaseSettings):
+    mongo_url: str = Field(default='localhost')
+    mongo_port: int = Field(default=27017)
+    mongo_login: str
+    mongo_password: str
+
 
 class SettingsFactory:
     def get_settings(self, type:str):
@@ -27,5 +37,7 @@ class SettingsFactory:
             return DatabaseSettings()
         if type == 'celery':
             return CelerySettings()
+        if type == 'mongo':
+            return MongoSettings()
         else:
             raise SettingsTypeError("Settings type not correct")

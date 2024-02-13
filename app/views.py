@@ -1,20 +1,57 @@
 from flask import render_template, request, flash, url_for, redirect, Blueprint
 from flask_login import login_user, login_required, logout_user, current_user
-from .database import *
+from app.database import *
+from app.mongo import *
+from app.models import Block, Transaction, BlockChain
 from . import celery_tasks
 
 my_app = Blueprint('main', __name__, template_folder='templates')
 
 
+# Provide current_user to base page
 @my_app.context_processor
 def inject_user():
     return dict(user=current_user)
 
 
-@my_app.route('/')
+# Routes
+@my_app.route('/', methods=['get', 'post'])
 def index():
-    celery_tasks.wait.delay()
-    return render_template('index.html', current_user=current_user)
+    # method POST
+    if request.method == 'POST':
+        # get transaction data from form
+        transaction = Transaction(creditor=current_user.username,
+                                  debtor=request.values.get('to'),
+                                  amount=request.values.get('amount'))
+
+        # get data about prev block
+        prev_block = Block(**get_last_block())
+        print(prev_block)
+        """    id: int = prev_block+1
+        transaction: dict[str, str] = {}
+        previous_block_hash: str prev_block_hash
+        proof: int = calculate_proof
+        hash: str calculate_proof"""
+
+        """
+        data = {
+        'id': 1,
+        'transaction': {},
+        'previous_block_hash': None,
+        'proof': None,
+        'hash': None,
+        }
+        """
+
+        # create block
+        # start calculation of proof
+        # send task to salary where block will be added
+        # render or redirect somewhere (Transaction will be added soon)
+
+    # method GET
+    if not current_user.is_authenticated:
+        return render_template('hello.html')
+    return render_template('index.html', blockchain=get_last_blocks(10))
 
 
 @my_app.route('/register', methods=['get', 'post'])

@@ -1,12 +1,5 @@
 {%extends 'base.html'%}
 {%block content%}
-<p>Your balance: {{balance}}FNC</p>
-{%include 'add_form.html'%}
-{%for block in blockchain.blocks%}
-<div class="container">
-    <pre>
-{{block}}
-    </pre>
-</div>
-{%endfor%}
+{%include 'profile.html'%}
+{%include 'blocks.html'%}
 {%endblock%}

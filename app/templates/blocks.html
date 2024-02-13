@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="row">
+    {%for block in blockchain.blocks %}
+    <div class="col-md-6 p-1">
+        <div class="block px-3 pt-1 pb-2 rounded">
+            <div class="row">
+                <div class="col">
+                    <h5 class="block_name">Block id: {{block.id}}</h5>
+                </div>
+            </div>
+
+            <div class="row mx-2">
+                <table class="table table-hover block_inside">
+                <thead><tr><th>Creditor</th><th>Debtor</th><th>Amount</th></tr></thead>
+                <tbody><tr><td>{{block.transaction.creditor}}</td><td>{{block.transaction.debtor}}</td><td>{{block.transaction.amount}}</td></tr></tbody>
+                </table>
+
+                <table class="table table-hover block_inside">
+                <thead><tr><th>Hash</th></tr></thead>
+                <tbody><tr><td>{{block.hash}}</td></tr></tbody>
+                </table>
+
+                <table class="table table-hover block_inside">
+                <thead><tr><th>Previous block hash</th></tr></thead>
+                <tbody><tr><td>{{block.previous_block_hash}}</td></tr></tbody>
+                </table>
+
+                 <table class="table table-hover block_inside">
+                <thead><tr><th>Proof of work</th></tr></thead>
+                <tbody><tr><td>{{block.proof}}</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {%endfor%}
+    </div>
+</div>

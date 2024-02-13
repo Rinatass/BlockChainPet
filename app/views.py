@@ -11,7 +11,7 @@ my_app = Blueprint('main', __name__, template_folder='templates')
 # Provide current_user to base page
 @my_app.context_processor
 def inject_user():
-    return dict(user=current_user)
+    return dict(user=current_user, zip=zip)
 
 
 # Routes

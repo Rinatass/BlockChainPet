@@ -1,4 +1,15 @@
-{%extends 'base.html'%}
-{%block content%}
-<a href="/logout">Выйти из аккаунта</a>
-{%endblock%}
+<div class="container">
+    <div class="row">
+        <div class="col-12 p-0" id="balance">
+        <div id="form_div" class="mr-1 pl-1">
+            {%include 'add_form.html'%}
+        </div>
+        <div class="block rounded ml-1 mr-1 mb-3" id="profile_div">
+                <div>
+                    <h4 id="hello_string" class="mt-4">Hello, {{user.username|title}}</h4>
+                    <h4 id="amount" class="mt-4">You current balance: {{1}} LTC</h4>
+                </div>
+        </div>
+        </div>
+    </div>
+</div>

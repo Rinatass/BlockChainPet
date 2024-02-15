@@ -71,7 +71,6 @@ def register():
         return render_template('register.html')
 
     if len(password) < 8:
-        error = True
         flash('Password must be more than 8 symbols')
 
     if user_exists(email=email):
@@ -86,7 +85,23 @@ def register():
     create_user(username, password, email)
     flash('Success')
 
-    return render_template('login.html')
+    # registration gift
+    transaction = Transaction(creditor='God',
+                              debtor=username,
+                              amount=100)
+    previous_block = get_last_block()
+    if not previous_block:
+        add_block(Block(id=0,
+                        transaction={'creditor': 'God',
+                                     'debtor': 'God',
+                                     'amount': 0},
+                        previous_block_hash='None',
+                        hash='None',
+                        proof=0))
+
+    previous_block = get_last_block()
+    process_block.delay(dict(transaction), dict(previous_block))
+    return redirect(url_for('main.login'))
 
 
 @my_app.route('/login', methods=['get', 'post'])
@@ -110,10 +125,19 @@ def login():
     return render_template('login.html')
 
 
+@my_app.route('/about')
+def about():
+    return render_template('about.html')
+
+
+@my_app.route('/author')
+def author():
+    return render_template('author.html')
+
+
 @my_app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect('login')
-
 

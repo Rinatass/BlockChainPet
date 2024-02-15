@@ -1,14 +1,20 @@
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import database_exists, create_database
 from hashlib import sha256
-from .models import User
 from app.config import SettingsFactory
 from app.exceptions import KeyWordArgsError
+from app.models import User, Base
 
 db_settings = SettingsFactory().get_settings('db')
 db_engine = create_engine(f"postgresql+psycopg2://"
                           f"{db_settings.db_login}:{db_settings.db_password}"
                           f"@{db_settings.db_host}:{db_settings.db_port}/mydb", echo=False)
+
+if not database_exists(db_engine.url):
+    create_database(db_engine.url)
+
+Base.metadata.create_all(db_engine)
 
 session_factory = sessionmaker(db_engine)
 
@@ -41,9 +47,9 @@ def user_exists(email=None, username=None):
     raise KeyWordArgsError('Please indicate user or email in keywords')
 
 
-def get_user_by_id(id):
+def get_user_by_id(id_):
     with session_factory() as s:
-        query = select(User).where(User.id == id)
+        query = select(User).where(User.id == id_)
         res = s.execute(query)
         user = res.scalar_one_or_none()
 
@@ -58,4 +64,3 @@ def get_user_by_login(login):
         res = s.execute(query)
         user = res.scalar_one_or_none()
     return user
-

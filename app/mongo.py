@@ -14,11 +14,13 @@ collection = db.blocks
 
 
 def add_block(block):
-    res = collection.insert_one(dict(block))
+    collection.insert_one(dict(block))
 
 
 def get_last_block():
-    block = Block(**collection.find_one(sort=[("id", -1)]))
+    block = collection.find_one(sort=[("id", -1)])
+    if block:
+        block = Block(**block)
     return block
 
 
@@ -35,7 +37,7 @@ def get_all_blocks():
     blockchain = []
     for block in blocks:
         blockchain.append(block)
-    return BlockChain(blockchain)
+    return BlockChain(blocks=blockchain)
 
 
 def get_relative_blocks(username):
@@ -45,21 +47,3 @@ def get_relative_blocks(username):
     for block in blocks:
         blockchain.append(Block(**block))
     return blockchain
-
-
-
-"""db = client.blockchain
-collection = db.blocks"""
-
-"""my_data = {
-    'kek': 2,
-    '2': 'string'
-}
-db = client.test
-collection = db.test
-
-res = collection.insert_one(my_data)
-print(res)
-res = collection.find().limit(20)
-for line in res:
-    print(type(line))"""

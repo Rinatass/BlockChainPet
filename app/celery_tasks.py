@@ -22,4 +22,3 @@ def process_block(transaction, previous_block):
                   proof=proof,
                   hash=hash_)
     add_block(block)
-

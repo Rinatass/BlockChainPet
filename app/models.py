@@ -1,7 +1,7 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import String, Text
 from flask_login import UserMixin
-from pydantic import BaseModel, Field, PositiveInt, PositiveFloat
+from pydantic import BaseModel, PositiveFloat
 from typing import List
 
 

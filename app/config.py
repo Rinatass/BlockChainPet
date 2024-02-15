@@ -4,10 +4,12 @@ from app.exceptions import SettingsTypeError
 
 '''Pydantics_settings reads settings from environment variables'''
 
+
 class AppSettings(BaseSettings):
     debug: bool = Field(default=False)
-    secret_key : str = Field(default=None)
-    host : str = Field(default='localhost')
+    secret_key: str = Field(default=None)
+    host: str = Field(default='localhost')
+    port: str = Field(default='5000')
 
 
 class DatabaseSettings(BaseSettings):
@@ -30,14 +32,14 @@ class MongoSettings(BaseSettings):
 
 
 class SettingsFactory:
-    def get_settings(self, type:str):
-        if type == 'app':
+    def get_settings(self, type_):
+        if type_ == 'app':
             return AppSettings()
-        if type == 'db':
+        if type_ == 'db':
             return DatabaseSettings()
-        if type == 'celery':
+        if type_ == 'celery':
             return CelerySettings()
-        if type == 'mongo':
+        if type_ == 'mongo':
             return MongoSettings()
         else:
             raise SettingsTypeError("Settings type not correct")

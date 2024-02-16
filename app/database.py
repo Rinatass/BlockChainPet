@@ -55,7 +55,6 @@ def get_user_by_id(id_):
 
     if user:
         return user
-    return False
 
 
 def get_user_by_login(login):

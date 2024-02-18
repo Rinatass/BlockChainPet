@@ -1,0 +1,49 @@
+version: "1.0"
+
+services:
+    postgres:
+        image: postgres
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: 12345
+            POSTGRES_HOST_AUTH_METHOD: trust
+        restart: always
+
+    mongo:
+        image: mongo
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo
+            MONGO_INITDB_ROOT_PASSWORD: 12345
+        restart: always
+    redis:
+        image: redis
+        restart: always
+            
+    gunicorn:
+        build: ./BlockChainPet
+        env_file:
+            - path: ./BlockChainPet/venv/.env
+        restart: always
+        command: gunicorn -w 4 -b 0.0.0.0 app:app
+        depends_on:
+            - postgres
+            - mongo
+            - redis
+
+    celery:
+        build: ./BlockChainPet
+        restart: always
+        env_file:
+            - path: ./BlockChainPet/venv/.env
+        command: celery -A app.celery_tasks worker --loglevel=INFO
+        depends_on:
+            - gunicorn
+    
+    nginx:
+        build: ./BlockChainPet/nginx
+        ports:
+            - 80:80
+        depends_on:
+            - gunicorn
+            - celery
+    

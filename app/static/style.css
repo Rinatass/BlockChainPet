@@ -107,6 +107,7 @@ body{
     color: #495057;
 }
 
-.about p{
-
+.hyperlink{
+    color: #e2c4ff;
+    text-decoration: underline;
 }
